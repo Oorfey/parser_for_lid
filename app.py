@@ -56,12 +56,7 @@ def parse_vk():
 
     phone_numbers = list(set(phone_pattern.findall(text)))  # Удаляем дубликаты
 
-    # 🔥 **Фильтрация номеров от случайных чисел**
-    filtered_phone_numbers = []
-    for num in phone_numbers:
-        num = num.replace(' ', '').replace('-', '').replace('(', '').replace(')', '')
-        if len(num) >= 10:  # Убедимся, что номер корректный
-            filtered_phone_numbers.append(num)
+    
 
     # Формируем результат
     result = {
