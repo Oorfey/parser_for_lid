@@ -47,25 +47,28 @@ def parse_vk():
     text = soup.get_text(separator='\n')
 
     # Регулярное выражение для поиска email-адресов
-    email_pattern = re.compile(
-        r'[\w\.-]+@[\w\.-]+'
-    )
+    email_pattern = re.compile(r'[\w\.-]+@[\w\.-]+\.\w+')
     emails = list(set(email_pattern.findall(text)))  # Удаляем дубликаты
 
-    # Регулярное выражение для поиска номеров телефонов (исключаем годы)
+    # 🔥 **Новое регулярное выражение для поиска телефонов**
     phone_pattern = re.compile(
-        r'(?:(?:\+7|8)?[\s\-]?)?(?:\(\d{3}\)|\d{3})[\s\-]?\d{3}[\s\-]?\d{2}[\s\-]?\d{2}'
+        r'(\+7|8)?[-\s\(]?\d{3}[-\s\)]?\d{3}[-\s]?\d{2}[-\s]?\d{2}'
     )
+
     phone_numbers = list(set(phone_pattern.findall(text)))
 
-    # 🔥 **Фильтрация некорректных данных** 🔥
-    phone_numbers = [num for num in phone_numbers if not re.match(r'^\d{4}$', num)]  # Исключаем 4-значные числа (годы)
+    # 🔥 **Фильтрация номеров от случайных чисел**
+    filtered_phone_numbers = []
+    for num in phone_numbers:
+        num = num.replace(' ', '').replace('-', '').replace('(', '').replace(')', '')
+        if len(num) >= 10:  # Убедимся, что номер корректный
+            filtered_phone_numbers.append(num)
 
     # Формируем результат
     result = {
         'title': title_text,
         'url': url_clean,
-        'phone_numbers': phone_numbers,
+        'phone_numbers': filtered_phone_numbers,
         'emails': emails
     }
 
