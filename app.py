@@ -5,7 +5,6 @@ import re
 
 app = Flask(__name__)
 
-# Конечная точка для парсинга страниц VK
 @app.route('/parse_vk', methods=['POST'])
 def parse_vk():
     data = request.get_json()
@@ -52,10 +51,9 @@ def parse_vk():
 
     # 🔥 **Новое регулярное выражение для поиска телефонов**
     phone_pattern = re.compile(
-        r'(\+7|8)?[-\s\(]?\d{3}[-\s\)]?\d{3}[-\s]?\d{2}[-\s]?\d{2}'
+        r'(?:\+?7|8)?[\s\-]?\(?\d{3}\)?[\s\-]?\d{3}[\s\-]?\d{2}[\s\-]?\d{2}'
     )
-
-    phone_numbers = list(set(phone_pattern.findall(text)))
+    phone_numbers = list(set(phone_pattern.findall(text)))  # Удаляем дубликаты
 
     # 🔥 **Фильтрация номеров от случайных чисел**
     filtered_phone_numbers = []
